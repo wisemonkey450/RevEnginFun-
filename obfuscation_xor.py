@@ -46,7 +46,8 @@ def gen_xor(fd, filename, cmd_comma_list):
     cmd_list = cmd_comma_list.split(',')
     cfd = init_c_file(filename)
     for cmd in cmd_list:
-        #RANDO KEY
+        fd.write("//The %s command\n" % cmd)
+        #Rando key
         key = os.urandom(len(cmd))
 
         enc = [ chr(ord(a) ^ ord(b)) for (a,b) in zip(cmd, key) ]
@@ -96,6 +97,7 @@ def main():
 
     #headers already exists...
     except OSError:
+        print_debug("Header Directory appears to exist")
         pass
 
     #Change to that directory
