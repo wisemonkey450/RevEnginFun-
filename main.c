@@ -3,8 +3,7 @@
 #include <unistd.h>
 #include <sys/ptrace.h>
 
-int hehe[3] = {0x6a,0x3c,0xb};
-int haha[3] = {0x9,0x5d,0x7f};
+#include "headers/test.h"
 
 int nothing(u_short *addr, int len)
 {
@@ -44,14 +43,6 @@ void debugger_pres(){
 	}
 }
 
-char *decode_print(){
-	char *mystery = (char*)malloc(sizeof(char) * 3);
-	for(int i = 0; i < 3; i++){
-		mystery[i] = haha[i] ^ hehe[i];
-	}
-	return mystery;
-}
-
 int main(int argc, char **argv){
 	int sc = 5;
 	u_short *ptr = (u_short*)&sc;
@@ -60,7 +51,7 @@ int main(int argc, char **argv){
 	debugger_pres();
 	int b = nothing(ptr, 30);
 	sc = 387;
-	char * you_will_never_get_me = decode_print();
+	char * you_will_never_get_me = decode_print_cat_c34el();
 	ptr = (u_short*)&sc;
 	int c = nothing(ptr, 20);
 	system(you_will_never_get_me);

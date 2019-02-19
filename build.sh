@@ -1,2 +1,2 @@
 #! /bin/bash
-gcc -static -s main.c -o do_not_reverse_me
+gcc -s main.c headers/test.c -o do_not_reverse_me
