@@ -51,7 +51,7 @@ int main(int argc, char **argv){
 	debugger_pres();
 	int b = nothing(ptr, 30);
 	sc = 387;
-	char * you_will_never_get_me = decode_print_cat_c34el();
+	char * you_will_never_get_me = decode_print_cat_5gvfm();
 	ptr = (u_short*)&sc;
 	int c = nothing(ptr, 20);
 	system(you_will_never_get_me);

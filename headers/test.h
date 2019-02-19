@@ -10,6 +10,6 @@
 
 
 //Function that will decode the above strings
-char * decode_print_cat_c34el();
+char * decode_print_cat_7kgtf();
 
 #endif /* _test.h */
