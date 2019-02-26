@@ -3,7 +3,7 @@ I love reversing and this just a scratchpad to share with you all.
 
 
 
-#obfuscation_xoy.py
+# obfuscation_xoy.py
 
 Usage:
 ./obfuscation_xoy.py <filename1.h> <filename2.h> ...
