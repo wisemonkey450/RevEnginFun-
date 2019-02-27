@@ -1,0 +1,293 @@
+
+
+             TABLE of various Operating System Indicator Bytes
+            ===================================================
+
+
+ Hard Disk Master Boot Sector Format:
+ ===================================
+
+ Offset     Size        Description
+ ------  ----------   ---------------------------------------
+  000h    446 Bytes     Master bootstrap loader code
+
+  1BEh     16 Bytes   Partition record for partition 1
+  1CEh     16 Bytes   Partition record for partition 2
+  1DEh     16 Bytes   Partition record for partition 3
+  1EEh     16 Bytes   Partition record for partition 4
+
+  1FEh      1 WORD    Signature, AA55h indicates valid sector
+
+
+ Partition Record Format:
+ =======================
+
+  Offset  Size    Description
+  ------ ------  -------------------------------------------------------
+   00h    Byte    Boot Indicator (80h = active partition)
+
+   01h    Byte    Partition start head 
+   02h    Byte    Partition start sector (bits 0-5)
+   03h    Byte    Partition start track (bits 8,9 in bits 6,7 of sector)
+
+=> 04h    Byte    operating system indicator  [ See TABLE below ! ] <=======
+                 ==========================
+   05h    Byte    Partition end head
+   06h    Byte    Partition end sector (bits 0-5)
+   07h    Byte    Partition end track (bits 8,9 in bits 6,7 of sector)
+
+   08h    DWORD   sectors preceding partition
+   0Ch    DWORD   length of partition in sectors
+
+
+
+ Values for Operating System indicator:
+ =====================================
+
+ 00h    empty partition-table entry
+ 01h    DOS 12-bit FAT
+ 02h    XENIX root file system
+ 03h    XENIX /usr file system (obsolete)
+ 04h    DOS 16-bit FAT (up to 32M)
+ 05h    DOS 3.3+ extended partition
+ 06h    DOS 3.31+ Large File System (16-bit FAT, over 32M)
+ =====================================================================
+ 07h    QNX
+ 07h    OS/2 HPFS
+ 07h    Windows NT NTFS
+ 07h    Advanced Unix
+ 07h    see partition boot record; could be any of the above or others
+
+ Note:  For partition-type 07h, you need to inspect the partition's
+        Boot Record for the actual file system type.
+ =====================================================================
+ 08h    OS/2 (v1.0-1.3 only)
+ 08h    AIX bootable partition, SplitDrive
+ 08h    Commodore DOS
+ 08h    DELL partition spanning multiple drives
+ -----------------------------------------------
+ 09h    AIX data partition
+ 09h    Coherent filesystem
+ ------------------------------- 
+ 0Ah    OS/2 Boot Manager
+ 0Ah    OPUS
+ 0Ah    Coherent swap partition
+ -------------------------------
+ 0Bh    Windows95 with 32-bit FAT
+ 0Ch    Windows95 with 32-bit FAT (using LBA-mode INT 13 extensions)
+ 0Dh
+ 0Eh  logical-block-addressable VFAT (same as 06h but using LBA-mode INT 13)
+ 0Fh  logical-block-addressable VFAT (same as 05h but using LBA-mode INT 13)
+ 10h    OPUS
+ 11h    OS/2 Boot Manager hidden 12-bit FAT partition
+ 12h    Compaq Diagnostics partition
+ 13h
+ -------------------------------
+ 14h  (resulted from using Novell DOS 7.0 FDISK to delete Linux Native part)
+ 14h    OS/2 Boot Manager hidden sub-32M 16-bit FAT partition
+ -------------------------------
+ 15h 
+ 16h    OS/2 Boot Manager hidden over-32M 16-bit FAT partition
+ -------------------------------
+ 17h    OS/2 Boot Manager hidden HPFS partition
+ 17h    hidden NTFS partition
+ -------------------------------
+ 18h    AST special Windows swap file ("Zero-Volt Suspend" partition)
+ 19h    Willowtech Photon coS
+ 1Ah
+ 1Bh    hidden Windows95 FAT32 partition
+ 1Ch    hidden Windows95 FAT32 partition (using LBA-mode INT 13 extensions)
+ 1Dh
+ 1Eh    hidden LBA VFAT partition
+ 1Fh
+ 20h    Willowsoft Overture File System (OFS1)
+ ------------------------------------
+ 21h    officially listed as reserved
+ 21h    FSo2
+ 22h
+ 23h    officially listed as reserved
+ 24h    NEC MS-DOS 3.x
+ 25h
+ 26h    officially listed as reserved
+ 27h
+ 31h    officially listed as reserved
+ 32h
+ 33h    officially listed as reserved
+ 34h    officially listed as reserved
+ 35h
+ 36h    officially listed as reserved
+ ------------------------------------
+ 37h
+ 38h    Theos
+ 39-3Bh
+ 3Ch    PowerQuest PartitionMagic recovery partition
+ 3D-3Fh
+ 40h    VENIX 80286
+ 41h    Personal RISC Boot
+ 41h    PowerPC boot partition
+ 42h    SFS (Secure File System) by Peter Gutmann
+ 43h
+ 44h
+ 45h    EUMEL/Elan
+ 46h    EUMEL/Elan
+ 47h    EUMEL/Elan
+ 48h    EUMEL/Elan
+ 49-4Eh
+ 4Fh    Oberon boot/data partition
+ 50h    OnTrack Disk Manager, read-only partition
+ 51h    OnTrack Disk Manager, read/write partition
+ 51h    NOVELL
+ 52h    CP/M
+ 52h    Microport System V/386
+ 53h    OnTrack Disk Manager, write-only partition???
+ 54h    OnTrack Disk Manager (DDO)
+ 55h    EZ-Drive (see also INT 13/AH=FFh"EZ-Drive")
+ 56h    GoldenBow VFeature
+ 57-5Bh
+ 5Ch    Priam EDISK
+ 5D-60h
+ 61h    SpeedStor
+ 62h
+ ------------------------------------
+ 63h    Unix SysV/386, 386/ix
+ 63h    Mach, MtXinu BSD 4.3 on Mach
+ 63h    GNU HURD
+ ------------------------------------
+ 64h    Novell NetWare 286
+ 64h    SpeedStore
+ ------------------------------------
+ 65h    Novell NetWare (3.11)
+ 66h
+ 67h    Novell
+ 68h    Novell
+ 69h    Novell
+ 6A-6Fh
+ 70h    DiskSecure Multi-Boot
+ ------------------------------------
+ 71h    officially listed as reserved
+ 72h
+ 73h    officially listed as reserved
+ 74h    officially listed as reserved
+ ------------------------------------
+ 75h    PC/IX
+ 76h    officially listed as reserved
+ ------------------------------------
+ 77-7Dh
+ 7Eh    F.I.X.
+ 7Fh
+ 80h    Minix v1.1 - 1.4a
+ ------------------------------------
+ 81h    Minix v1.4b+
+ 81h    Linux
+ 81h    Mitac Advanced Disk Manager
+ ------------------------------------
+ 82h    Linux Swap partition
+ 82h    Prime
+ 82h    Solaris (Unix)
+ ------------------------------------
+ 83h    Linux native file system (ext2fs/xiafs)
+ 84h    OS/2-renumbered type 04h partition (related to hiding DOS C: drive)
+ 85h    Linux EXT
+ 86h    FAT16 volume/stripe set (Windows NT)
+ ---------------------------------------------
+ 87h    HPFS Fault-Tolerant mirrored partition
+ 87h    NTFS volume/stripe set
+ ---------------------------------------------
+ 88-92h
+ 93h    Amoeba file system
+ 94h    Amoeba bad block table
+ 95-98h
+ 99h    Mylex EISA SCSI
+ 9A-9Fh
+ A0h    Phoenix NoteBIOS Power Management "Save-to-Disk" partition
+ ------------------------------------
+ A1h    officially listed as reserved
+ A2h
+ A3h    officially listed as reserved
+ A4h    officially listed as reserved
+ A5h    FreeBSD, BSD/386
+ A6h    OpenBSD
+ A7-A8h
+ A9h    NetBSD (http://www.netbsd.org/)
+ AA-B0h
+ B1h    officially listed as reserved
+ B2h
+ B3h    officially listed as reserved
+ B4h    officially listed as reserved
+ B5h
+ B6h    officially listed as reserved
+ ------------------------------------
+ B7h    BSDI file system (secondarily swap)
+ B8h    BSDI swap partition (secondarily file system)
+ B9-BDh
+ BEh    Solaris boot partition
+ BFh
+ C0h    DR-DOS/Novell DOS secured partition
+ C0h    CTOS
+ C1h    DR DOS 6.0 LOGIN.EXE-secured 12-bit FAT partition
+ C2-C3h
+ C4h    DR DOS 6.0 LOGIN.EXE-secured 16-bit FAT partition
+ C5h
+ C6h    DR DOS 6.0 LOGIN.EXE-secured Huge partition
+ C6h    corrupted FAT16 volume/stripe set (Windows NT)
+ -----------------------------------------------------
+ C7h    Syrinx Boot
+ C7h    corrupted NTFS volume/stripe set
+ ----------------------------------------
+ C8-CAh
+ CBh    Reserved for DR-DOS secured FAT32
+ CCh    Reserved for DR-DOS secured FAT32 (LBA)
+ CDh
+ CEh    Reserved for DR-DOS secured FAT16 (LBA)
+ CFh
+ D0h    Multiuser DOS secured FAT12
+ D1h    Old Multiuser DOS secured FAT12
+ D2-D3h
+ D4h    Old Multiuser DOS secured FAT16 (<= 32M)
+ D5h    Old Multiuser DOS secured extended partition
+ D6h    Old Multiuser DOS secured FAT16 (> 32M)
+ D7h
+ D8h    CP/M-86
+ D9-DAh
+ DBh    CP/M, Concurrent CP/M, Concurrent DOS
+ DBh    CTOS (Convergent Technologies OS)
+ --------------------------------------------
+ DC-E0h
+ E1h    SpeedStor 12-bit FAT extended partition
+ E2h    DOS read-only (Florian Painke's XFDISK 1.0.4)
+ E3h    DOS read-only
+ E3h    Storage Dimensions
+ E4h    SpeedStor 16-bit FAT extended partition
+ E5h    officially listed as reserved
+ E6h    officially listed as reserved
+ E7-EAh
+ EBh    BeOS BFS (BFS1)
+ EC-F0h
+ F1h    Storage Dimensions
+ F2h    DOS 3.3+ secondary partition
+ F3h    officially listed as reserved
+ F4h    SpeedStor
+ F4h    Storage Dimensions
+ F5h    Prologue
+ F6h    officially listed as reserved
+ F7-FDh
+ FEh    LANstep
+ FEh    IBM PS/2 IML (Initial Microcode Load) partition
+ FFh    Xenix bad block table
+ ---------------------------------------------------------------------------
+
+
+ Values Bootstrap loader is called with (IBM BIOS):
+
+        CS:IP = 0000h:7C00h
+
+        DH = Access
+             bits 7-6,4-0: don't care
+             bit 5: If=0, device supported by INT 13
+
+        DL = Boot Drive
+             00h first floppy
+             80h first hard disk
+
+
+ [Data checked against Ralf Brown's Interrupt List files.]

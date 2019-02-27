@@ -1,0 +1,265 @@
+
+          MBR_DEMO.BIN    6-23-2003  5:14 AM
+
+
+          Master Boot Record   Demonstration Program
+          =      =    =
+
+	  UNLESS you're trying to understand how the MBR
+      of a hard drive operates, this program probably won't
+      be of any use to you!  You should have an interest in
+      learning how to use DEBUG programs as well...
+
+   ****** WARNING: Do NOT exectute this program under
+          Windows NT, Windows 2000 or Windows XP !!!
+          Those operating systems do not allow direct
+          access to your hard drive; my Demo program
+          will FAIL to function under those OSs!     *******
+
+   +-------------------------------------------------------+
+   |                                                       |
+   |        If you RUN this file in DEBUG on a drive that  |
+   |  has the first partition set to be the Active Boot    |
+   |  Partition, then it should load the code from your    |
+   |  own drive's Boot Record into offset 7C00 - 7DFF of   |
+   |  whatever segment of memory was assigned to the DEBUG |
+   |  program when you ran it. Thus, this 'demonstration'  |
+   |  program "simulates" the MBR code of your hard drive. |
+   |                                                       |
+   |  This is necessary for students to observe the step-  |
+   |  by-step operation of an MBR because running the real |
+   |  code will either force an actual reboot or LOCK-UP   |
+   |  the computer!                                        |
+   |							   |
+   |  (In reality, of course, your drive's Boot Record is  |
+   |   actually loaded into Segment 0000: which becomes a  |
+   |  critical area for PC operations AFTER booting.)      |
+   |                                                       |
+   |  NOTE:  This file includes a SIMPLE Partition Table   |
+   |         copied from a 3016 Mega-Byte Hard Drive that  |
+   |         has only ONE partition. The partition begins  |
+   |         at the standard location and uses all of the  |
+   |         remaining space on the drive; except for the  |
+   |         almost never used 'test cylinder' that is     |
+   |         still preserved in some very old BIOS chips.  |
+   |                                                       |
+   |  CAUTION: Although I do NOT see any problems arising  |
+   |           from using this program 'as is' to examine  |
+   |  the operation of an MBR, you may wish to replace my  |
+   |  _sample_ Partition Table in the code with that of    |
+   |  your own drive's actual values. All the large drives |
+   |  that I've examined always place the Boot Record at   |
+   |  Sector 63, BUT EVEN IF your drive is different, the  |
+   |  only problem that could arise is that my demo code   |
+   |  would simply load bytes from the wrong sector of the |
+   |  drive into memory... And since my Demo _NEVER_ jumps |
+   |  to the sector of code it loads from the drive (it    |
+   |  Terminates BEFORE doing so on purpose!), there can't |
+   |  be any problem!  IN ORDER to view the actual bytes   |
+   |  of your MBR's Partition Table, you can use the FREE  |
+   |  Disk Editor program from PhysTechSoft which I've     |
+   |  linked to and commented about on this web page:      |
+   |                                                       |
+   | <http://www.geocities.com/thestarman3/tool/...        |
+   |                                 FreeTools.html#PTSDE> |
+   +-------------------------------------------------------+
+
+
+    The file MBR_DEMO.bin can be renamed to MBR_DEMO.COM if
+ you wish, since it will actually run in a DOS-Window as a
+ normal .COM program without causing any problems. ( I made
+ sure of this just in case someone hit the 'G' key with the
+ file loaded in DEBUG !)
+
+     Any instructions in the original code which would have
+ caused a program crash and possible loss of data have been
+ CHANGED into 'non-lethal' code as noted below. Compare the
+ changes with original code found on my web page:
+
+  http://www.geocities.com/thestarman3/asm/MBR_in_detail.htm
+ (This HTML file is included in MBRDEMO.ZIP archive for your
+  convenience!)
+
+     You may also wish to read my Guide to DEBUG at:
+
+     http://www.geocities.com/thestarman3/DOS/debug.htm
+
+
+
+
+       CHANGES  MADE  TO  THE  ORIGINAL  MBR  CODE
+       ===========================================
+
+  Original 'harmful' ASM code         REPLACED BY:
+ -----------------------------    --------------------
+  7C01       XOR  AX,AX             (makes AX zero)
+  7C03       MOV  SS,AX     ----->    MOV  AX,CS
+
+[ We don't want the Stack Segment to be zero for our demo.
+  So making this change keeps both the Extra (ES) and Data
+ (DS) Segments safe as well.  Execution must remain within
+ the single 64kb Segment assigned to us by DOS. ]
+
+
+  0633       INT  18        ----->    INT  20
+
+[ Obviously we don't want to LOCK-UP Windows and be forced
+  to REBOOT the computer which is what an INT 18 would do!
+  I had wanted to simulate the INT 18 instruction by adding
+  extra code to print out the usual "PRESS A KEY TO REBOOT"
+  error message, BUT I don't want to change the offsets of
+  the original code,  and inserting a jump here would have
+  added one byte too many (had to be a FAR jump).  So, if
+  you happen to take this branch in the code,  all you'll
+  see under DEBUG is 'program terminated normally.' ]
+
+
+  065B       JMP  065B      ----->    INT  20
+
+[ Rather than keeping the program stuck in an infinite loop,
+  I opted out for an INT 20 to terminate the program.  This
+  will be very convenient if you decide to test any of the
+  error message routines!  MORE ON THIS LATER. ]
+
+
+  0686       JMP  0000:7C00	-->   JMP  03F0
+
+[ First, the boot sector we loaded was NOT stored in segment
+  0000; we made sure of that so as not to corrupt memory in
+  use by the system!  And we certainly don't want to run the
+  Boot-up process before Windows has been shut-down anyway!!
+
+  I added some extra code to print out what this program
+  does and to terminate with the standard 04Ch function of
+  INT 21. ]
+
+
+ 	So, apart from these FOUR exceptions, AND all of the
+ extra code that I added to turn this demo file into a fully
+ functioning program, the rest of the code is the same as
+ that found in any copy of the Standard Master Boot Record
+ and functions just as it would during the boot-up of the
+ first Hard Drive on your system; as if it were installed on
+ that drive's first sector.
+ 
+    DEBUG loads the .BIN (or .COM) file into memory starting
+ at Offset 0100 hex.  The following instructions are what I
+ had to add at the beginning of the program to simulate the
+ operation of the BIOS which normally loads the MBR code to
+ Offset 7C00 of the first segment during a normal boot-up.
+   (Of course, since we can NOT use that memory segment, DOS
+ will find an unused segment somewhere above all the memory
+ already in use by Windows and other programs running at the
+ time):
+
+     0100 FC            CLD
+     0101 BE1001        MOV     SI,0110
+     0104 BF007C        MOV     DI,7C00
+     0107 B90001        MOV     CX,0100
+     010A F3            REP
+     010B A5            MOVSW 
+     010C E9F17A        JMP     7C00
+
+	This code is very similar to that of the MBR itself.
+  It clears (sets to a 0-bit) the Direction Flag which means
+  incrementing (UP), puts the address 0110 into the Source
+  Index register (that's where the MBR code in the demo file
+  is first loaded), 7C00 into the Destination Index register
+  (where the code will be moved to!), 100 hex into the Count
+  register (CX), moves all of the next 256 WORDs (512 bytes)
+  of code to 7C00 and jumps to the first instruction at that
+  location.
+
+	As stated above, the code then executes almost the
+  same as it would during a normal boot-up until the last
+  instruction which tells it to jump to 0410 (instead of the
+  usual 0000:7C00).  At that point I've added a simple DOS
+  interrupt to print out the program's use and terminate it
+  with a standard DOS interrupt (Funciton 4C of INT 21).
+
+     These three instructions print out the string beginning
+  at offset 0310:
+
+           03F0 BA1003        MOV     DX,0310
+           03F3 B409          MOV     AH,09
+           03F5 CD21          INT     21
+
+  which contains the text:
+  ----------------------------------------------------------
+  This program demonstrates the operation of a Master Boot
+  Record!  You must open this file with a debugging program
+  such as MS-DOS DEBUG to fully understand it.
+  See MBR_DEMO.TXT for a complete explanation.
+  ----------------------------------------------------------
+
+  And these two lines give the code a normal program ending:
+
+           03F7 B8004C        MOV     AX,4C00
+           03FA CD21          INT     21
+
+ ============================================================
+
+
+	Go ahead and load the file into DEBUG, and then enter
+  the command  ' g 10c '  to begin examining the operation of
+  the Standard MBR code after jumping to 7C00. UNFORTUNATELY,
+  the command 'g 7c00' will NOT work because breakpoints can
+  only be set, initially, within the range of the file's code
+  size when first loaded (100 to 3FF; 768 bytes).
+
+
+	IF you want to actually see one of the ERROR routines
+  execute, you can change a byte here or there in the SAMPLE
+  PARTITION TABLE _after_ DEBUG loads the code into memory at
+  some point _before_ you step into the code which tests for
+  an error in the PARTITION TABLE.  Any errors will cause the
+  program to branch off and terminate early.
+  
+  To get the "Invalid Partition Table" error message, you can,
+  for example, change the byte at offset 02DE from 00 to 80
+  as soon as you load the file into DEBUG. (This makes the
+  sample table appear to have TWO active partitions.)
+
+        C:\>debug mbr_demo.bin
+	-e 2de 80
+	-g
+        Invalid partition table
+        Program terminated normally
+	-q
+
+        C:\>
+
+   What will happen if you change the 'Signature' at the very
+   end of the Boot Record that you load from your hard drive?
+  (NO, we're _not_ going to change it on the drive itself!)
+
+   Well, first we need to get the sector into memory, so do 
+   the following:
+
+	C:\>debug mbr_demo.bin
+	-g 10c
+	-t
+	-g 7c18
+	-t
+	-g 678
+
+    and you should see a register view similar to this:
+
+    AX=0050  BX=7C00  CX=0001  DX=0180  SP=7C00  BP=07BE  SI=07FE  DI=0005
+    DS=xxxx  ES=xxxx  SS=xxxx  CS=xxxx  IP=0678   NV UP EI PL ZR NA PE NC
+    xxxx:0678 BEC206        MOV     SI,06C2
+
+    Now enter this line into DEBUG:
+
+	-e 7dfe 54
+
+   This changes the byte at offset 7DFE from 55 to 54 (giving
+   it a signature value of AA54 instead of AA55).  When you
+   continue with the execution of the code, it will spit out:
+   "Missing operating system" simply because the 'signature'
+   didn't match.
+
+
+ [ The Starman.  23 AUG 2000.  Revised 27 JUN 2001.
+    Warnings about WinNT/2000/XP added 02 FEB 2003.
+    Revised again on 23 JUN 2003. ]
