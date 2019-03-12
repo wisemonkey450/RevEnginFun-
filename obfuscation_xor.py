@@ -53,16 +53,12 @@ def gen_xor(fd, filename, cmd_comma_list):
     cfd = init_c_file(filename)
 
     for cmd in cmd_list:
-<<<<<<< HEAD
         fd.write("//The %s command\n" % cmd)
-        #Rando key
-=======
         cmd_name = str(cmd.split(" ")[0]) + str("_") + str(''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(5)))
 
         print_debug(cmd_name)
 
         #RANDO KEY
->>>>>>> 6d3d28184f20b9002740ca94561954192fde56ec
         key = os.urandom(len(cmd))
 
         enc = [ chr(ord(a) ^ ord(b)) for (a,b) in zip(cmd, key) ]
@@ -107,6 +103,9 @@ def main():
     files = list(sys.argv[1:])
     print_debug("Will be writing to the following files: " + str(files))
 
+    for f in range(0,len(files)):
+        files[f] = str(files[f]) + ".h"
+
     #Make seperate directory
     try:
         print_debug("Making headers directory")
@@ -114,15 +113,10 @@ def main():
 
     #headers already exists...
     except OSError:
-<<<<<<< HEAD
-        print_debug("Header Directory appears to exist")
-        pass
-=======
         print_debug("Reinitializing the headers directory")
         os.system('rm -rf headers')
         print_debug("Making headers directory")
         os.mkdir("headers")
->>>>>>> 6d3d28184f20b9002740ca94561954192fde56ec
 
     #Change to that directory
     print_debug("Changing into headers directory")
