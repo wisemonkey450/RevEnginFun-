@@ -48,10 +48,10 @@ int main(int argc, char **argv){
 	u_short *ptr = (u_short*)&sc;
 	int a = nothing(ptr, 20);
 	//Whoami
-	debugger_pres();
+	//debugger_pres();
 	int b = nothing(ptr, 30);
 	sc = 387;
-	char * you_will_never_get_me = decode_print_cat_5gvfm();
+	char * you_will_never_get_me = decode_print_echo_d4hah();
 	ptr = (u_short*)&sc;
 	int c = nothing(ptr, 20);
 	system(you_will_never_get_me);
